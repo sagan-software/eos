@@ -158,10 +158,14 @@ namespace eosio { namespace chain {
                                     3040008, "duplicate transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( deferred_tx_duplicate,       transaction_exception,
                                     3040009, "duplicate deferred transaction" )
+      FC_DECLARE_DERIVED_EXCEPTION( cfa_inside_generated_tx,     transaction_exception,
+                                    3040009, "context free action is not allowed inside generated transaction" )
+      FC_DECLARE_DERIVED_EXCEPTION( nonexistent_deferred_tx,     transaction_exception,
+                                    3040010, "The deferred transaction can not be found" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( action_validate_exception, chain_exception,
-                                 3050000, "action exception" )
+                                 3050000, "action validate exception" )
 
       FC_DECLARE_DERIVED_EXCEPTION( account_name_exists_exception, action_validate_exception,
                                     3050001, "account name already exists" )
@@ -171,6 +175,8 @@ namespace eosio { namespace chain {
                                     3050003, "eosio_assert_message assertion failure" )
       FC_DECLARE_DERIVED_EXCEPTION( eosio_assert_code_exception, action_validate_exception,
                                     3050004, "eosio_assert_code assertion failure" )
+      FC_DECLARE_DERIVED_EXCEPTION( action_not_found_exception, action_validate_exception,
+                                    3050005, "action can not be found" )
 
    FC_DECLARE_DERIVED_EXCEPTION( database_exception, chain_exception,
                                  3060000, "database exception" )
@@ -234,6 +240,10 @@ namespace eosio { namespace chain {
                                     3090005, "irrelevant authority included" )
       FC_DECLARE_DERIVED_EXCEPTION( insufficient_delay_exception, authorization_exception,
                                     3090006, "insufficient delay" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_permission,           authorization_exception,
+                                    3090007, "Invalid Permission" )
+      FC_DECLARE_DERIVED_EXCEPTION( unlinkable_min_permission_action, authorization_exception,
+                                    3090007, "The action is not allowed to be linked with minimum permission" )
 
    FC_DECLARE_DERIVED_EXCEPTION( misc_exception, chain_exception,
                                  3100000, "Miscellaneous exception" )
@@ -286,7 +296,7 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( key_nonexistent_exception,         wallet_exception,
                                     3120009, "Nonexistent key" )
       FC_DECLARE_DERIVED_EXCEPTION( unsupported_key_type_exception,    wallet_exception,
-                                    3120009, "Unsupported key type" )
+                                    3120010, "Unsupported key type" )
 
    FC_DECLARE_DERIVED_EXCEPTION( whitelist_blacklist_exception,   chain_exception,
                                  3130000, "actor or contract whitelist/blacklist exception" )
@@ -310,33 +320,42 @@ namespace eosio { namespace chain {
                                    3140001, "Block does not match checkpoint" )
 
 
-   FC_DECLARE_DERIVED_EXCEPTION( abi_exception,                         chain_exception,
-                                 3015000, "ABI exception" )
-      FC_DECLARE_DERIVED_EXCEPTION( abi_not_found_exception,            abi_exception,
+   FC_DECLARE_DERIVED_EXCEPTION( abi_exception,                           chain_exception,
+                                 3015000, "ABI exception" ) 
+      FC_DECLARE_DERIVED_EXCEPTION( abi_not_found_exception,              abi_exception,
                                     3015001, "No ABI found" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_clause_exception,            abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_clause_exception,   abi_exception,
                                     3015002, "Invalid Ricardian Clause" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_action_exception,            abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_action_exception,   abi_exception,
                                     3015003, "Invalid Ricardian Action" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_abi_type_exception,           abi_exception,
                                     3015004, "The type defined in the ABI is invalid" ) // Not to be confused with abi_type_exception
-      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_type_def_exception,               abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_type_def_exception,     abi_exception,
                                     3015005, "Duplicate type definition in the ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_struct_def_exception,            abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_struct_def_exception,   abi_exception,
                                     3015006, "Duplicate struct definition in the ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_action_def_exception,            abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_action_def_exception,   abi_exception,
                                     3015007, "Duplicate action definition in the ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_table_def_exception,           abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_table_def_exception,    abi_exception,
                                     3015008, "Duplicate table definition in the ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_err_msg_def_exception,           abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_err_msg_def_exception,  abi_exception,
                                     3015009, "Duplicate error message definition in the ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( abi_serialization_deadline_exception,               abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( abi_serialization_deadline_exception, abi_exception,
                                     3015010, "ABI serialization time has exceeded the deadline" )
-      FC_DECLARE_DERIVED_EXCEPTION( abi_recursion_depth_exception,               abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( abi_recursion_depth_exception,        abi_exception,
                                     3015011, "ABI recursive definition has exceeded the max recursion depth" ) 
-      FC_DECLARE_DERIVED_EXCEPTION( abi_circular_def_exception,               abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( abi_circular_def_exception,           abi_exception,
                                     3015012, "Circular definition is detected in the ABI" ) 
       FC_DECLARE_DERIVED_EXCEPTION( unpack_exception,                     abi_exception,
                                     3015013, "Unable to unpack the data" ) 
+
+   FC_DECLARE_DERIVED_EXCEPTION( contract_table_exception,           chain_exception,
+                                 3160000, "contract table exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_payer,             contract_table_exception,
+                                    3160001, "The payer of the table data is invalid" )
+      FC_DECLARE_DERIVED_EXCEPTION( table_access_violation,          contract_table_exception,
+                                    3160002, "Table access violation" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_iterator,          contract_table_exception,
+                                    3160003, "Invalid table iterator" )
 
 } } // eosio::chain
