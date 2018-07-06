@@ -105,16 +105,14 @@ namespace eosio { namespace chain {
                                     3010006, "Invalid transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( abi_type_exception,                chain_type_exception,
                                     3010007, "Invalid ABI" )
-      FC_DECLARE_DERIVED_EXCEPTION( abi_not_found_exception,           chain_type_exception,
-                                    3010008, "No ABI found" )
       FC_DECLARE_DERIVED_EXCEPTION( block_id_type_exception,           chain_type_exception,
-                                    3010009, "Invalid block ID" )
+                                    3010008, "Invalid block ID" )
       FC_DECLARE_DERIVED_EXCEPTION( transaction_id_type_exception,     chain_type_exception,
-                                    3010010, "Invalid transaction ID" )
+                                    3010009, "Invalid transaction ID" )
       FC_DECLARE_DERIVED_EXCEPTION( packed_transaction_type_exception, chain_type_exception,
-                                    3010011, "Invalid packed transaction" )
+                                    3010010, "Invalid packed transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( asset_type_exception,              chain_type_exception,
-                                    3010012, "Invalid asset" )
+                                    3010011, "Invalid asset" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( fork_database_exception, chain_exception,
@@ -310,5 +308,35 @@ namespace eosio { namespace chain {
                                  3140000, "exceptions that are allowed to bubble out of emit calls in controller" )
       FC_DECLARE_DERIVED_EXCEPTION( checkpoint_exception,          controller_emit_signal_exception,
                                    3140001, "Block does not match checkpoint" )
+
+
+   FC_DECLARE_DERIVED_EXCEPTION( abi_exception,                         chain_exception,
+                                 3015000, "ABI exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( abi_not_found_exception,            abi_exception,
+                                    3015001, "No ABI found" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_clause_exception,            abi_exception,
+                                    3015002, "Invalid Ricardian Clause" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_action_exception,            abi_exception,
+                                    3015003, "Invalid Ricardian Action" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_abi_type_exception,           abi_exception,
+                                    3015004, "The type defined in the ABI is invalid" ) // Not to be confused with abi_type_exception
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_type_def_exception,               abi_exception,
+                                    3015005, "Duplicate type definition in the ABI" )
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_struct_def_exception,            abi_exception,
+                                    3015006, "Duplicate struct definition in the ABI" )
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_action_def_exception,            abi_exception,
+                                    3015007, "Duplicate action definition in the ABI" )
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_table_def_exception,           abi_exception,
+                                    3015008, "Duplicate table definition in the ABI" )
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_err_msg_def_exception,           abi_exception,
+                                    3015009, "Duplicate error message definition in the ABI" )
+      FC_DECLARE_DERIVED_EXCEPTION( abi_serialization_deadline_exception,               abi_exception,
+                                    3015010, "ABI serialization time has exceeded the deadline" )
+      FC_DECLARE_DERIVED_EXCEPTION( abi_recursion_depth_exception,               abi_exception,
+                                    3015011, "ABI recursive definition has exceeded the max recursion depth" ) 
+      FC_DECLARE_DERIVED_EXCEPTION( abi_circular_def_exception,               abi_exception,
+                                    3015012, "Circular definition is detected in the ABI" ) 
+      FC_DECLARE_DERIVED_EXCEPTION( unpack_exception,                     abi_exception,
+                                    3015013, "Unable to unpack the data" ) 
 
 } } // eosio::chain
