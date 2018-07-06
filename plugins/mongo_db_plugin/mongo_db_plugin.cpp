@@ -342,7 +342,7 @@ void mongo_db_plugin_impl::_process_block(const block_trace& bt, const signed_bl
       if (wipe_database_on_startup) {
          // verify on start we have no previous blocks
          verify_no_blocks(blocks);
-         FC_ASSERT(block_num < 2, "Expected start of block, instead received block_num: ${bn}", ("bn", block_num));
+         EOS_ASSERT(block_num < 2, plugin_exception, "Expected start of block, instead received block_num: ${bn}", ("bn", block_num));
       } else {
          // verify on restart we have previous block
          verify_last_block(blocks, prev_block_id_str);
@@ -827,7 +827,7 @@ void mongo_db_plugin::plugin_initialize(const variables_map& options)
 
       // add callback to chain_controller config
       chain_plugin* chain_plug = app().find_plugin<chain_plugin>();
-      FC_ASSERT(chain_plug);
+      EOS_ASSERT(chain_plug, missing_chain_plugin_exception, "chain plugin is not initialized");
       chain_plug->chain_config().applied_block_callbacks.emplace_back(
             [my = my](const chain::block_trace& bt) { my->applied_block(bt); });
       chain_plug->chain_config().applied_irreversible_block_callbacks.emplace_back(

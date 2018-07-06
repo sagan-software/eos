@@ -84,7 +84,7 @@ namespace eosio { namespace chain {
     *   |- wasm_exception
     *   |- resource_exhausted_exception
     *   |- misc_exception
-    *   |- missing_plugin_exception
+    *   |- plugin_exception
     *   |- wallet_exception
     */
 
@@ -113,6 +113,8 @@ namespace eosio { namespace chain {
                                     3010010, "Invalid packed transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( asset_type_exception,              chain_type_exception,
                                     3010011, "Invalid asset" )
+      FC_DECLARE_DERIVED_EXCEPTION( chain_id_type_exception,           chain_type_exception,
+                                    3010011, "Invalid chain ID" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( fork_database_exception, chain_exception,
@@ -135,6 +137,8 @@ namespace eosio { namespace chain {
                                     3030004, "block exhausted allowed resources" )
       FC_DECLARE_DERIVED_EXCEPTION( block_too_old_exception,     block_validate_exception,
                                     3030005, "block is too old to push" )
+      FC_DECLARE_DERIVED_EXCEPTION( received_future_block_exception,     block_validate_exception,
+                                    3030006, "block is from the future" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( transaction_exception,             chain_exception,
@@ -162,6 +166,8 @@ namespace eosio { namespace chain {
                                     3040009, "context free action is not allowed inside generated transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( nonexistent_deferred_tx,     transaction_exception,
                                     3040010, "The deferred transaction can not be found" )
+      FC_DECLARE_DERIVED_EXCEPTION( too_many_tx_at_once,     transaction_exception,
+                                    3040011, "Pushing too many transactions at once" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( action_validate_exception, chain_exception,
@@ -244,6 +250,8 @@ namespace eosio { namespace chain {
                                     3090007, "Invalid Permission" )
       FC_DECLARE_DERIVED_EXCEPTION( unlinkable_min_permission_action, authorization_exception,
                                     3090007, "The action is not allowed to be linked with minimum permission" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_parent_permission,           authorization_exception,
+                                    3090007, "The parent permission is invalid" )
 
    FC_DECLARE_DERIVED_EXCEPTION( misc_exception, chain_exception,
                                  3100000, "Miscellaneous exception" )
@@ -260,18 +268,24 @@ namespace eosio { namespace chain {
                                     3100005, "extracted genesis state from blocks.log" )
       FC_DECLARE_DERIVED_EXCEPTION( subjective_block_production_exception,    misc_exception,
                                     3100006, "subjective exception thrown during block production" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_http_client_root_cert,    misc_exception,
+                                    3100006, "invalid http client root certificate" )
 
-   FC_DECLARE_DERIVED_EXCEPTION( missing_plugin_exception, chain_exception,
-                                 3110000, "missing plugin exception" )
+   FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
+                                 3110000, "plugin exception" )
 
-      FC_DECLARE_DERIVED_EXCEPTION( missing_chain_api_plugin_exception,           missing_plugin_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( missing_chain_api_plugin_exception,           plugin_exception,
                                     3110001, "Missing Chain API Plugin" )
-      FC_DECLARE_DERIVED_EXCEPTION( missing_wallet_api_plugin_exception,          missing_plugin_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( missing_wallet_api_plugin_exception,          plugin_exception,
                                     3110002, "Missing Wallet API Plugin" )
-      FC_DECLARE_DERIVED_EXCEPTION( missing_history_api_plugin_exception, missing_plugin_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( missing_history_api_plugin_exception,         plugin_exception,
                                     3110003, "Missing History API Plugin" )
-      FC_DECLARE_DERIVED_EXCEPTION( missing_net_api_plugin_exception,             missing_plugin_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( missing_net_api_plugin_exception,             plugin_exception,
                                     3110004, "Missing Net API Plugin" )
+      FC_DECLARE_DERIVED_EXCEPTION( missing_chain_plugin_exception,               plugin_exception,
+                                    3110005, "Missing Chain Plugin" )
+      FC_DECLARE_DERIVED_EXCEPTION( plugin_config_exception,               plugin_exception,
+                                    3110005, "Missing Chain Plugin" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( wallet_exception, chain_exception,
@@ -297,6 +311,9 @@ namespace eosio { namespace chain {
                                     3120009, "Nonexistent key" )
       FC_DECLARE_DERIVED_EXCEPTION( unsupported_key_type_exception,    wallet_exception,
                                     3120010, "Unsupported key type" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_lock_timeout_exception,    wallet_exception,
+                                    3120011, "Wallet lock timeout is invalid" )
+ 
 
    FC_DECLARE_DERIVED_EXCEPTION( whitelist_blacklist_exception,   chain_exception,
                                  3130000, "actor or contract whitelist/blacklist exception" )
@@ -357,5 +374,21 @@ namespace eosio { namespace chain {
                                     3160002, "Table access violation" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_table_iterator,          contract_table_exception,
                                     3160003, "Invalid table iterator" )
+
+   FC_DECLARE_DERIVED_EXCEPTION( producer_exception,           chain_exception,
+                                 3170000, "contract table exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( nonexistent_producer_priv_key,             producer_exception,
+                                    3170001, "Producer private key is not available" )
+      FC_DECLARE_DERIVED_EXCEPTION( missing_pending_block_state,          producer_exception,
+                                    3170002, "Pending block state is missing" )
+
+   FC_DECLARE_DERIVED_EXCEPTION( reversible_block_exception,           chain_exception,
+                                 3180000, "contract table exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_reversible_blocks_dir,             reversible_block_exception,
+                                    3180001, "Invalid reversible blocks directory" )
+      FC_DECLARE_DERIVED_EXCEPTION( backup_dir_exist,          reversible_block_exception,
+                                    3180002, "Backup directory for reversible blocks already existg" )
+      FC_DECLARE_DERIVED_EXCEPTION( gap_in_reversible_blocks_db,          reversible_block_exception,
+                                    3180003, "There is gap in reversible blocks database" )
 
 } } // eosio::chain

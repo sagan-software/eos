@@ -345,7 +345,7 @@ namespace eosio {
            if( start > pos ) start = 0;
            end   = pos;
         }
-        FC_ASSERT( end >= start );
+        EOS_ASSERT( end >= start, chain::plugin_exception, "end position is earlier than start position" );
 
         idump((start)(end));
 
