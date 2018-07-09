@@ -42,18 +42,18 @@ class apply_context {
 
             const table_id_object& get_table( table_id_object::id_type i )const {
                auto itr = _table_cache.find(i);
-               EOS_ASSERT( itr != _table_cache.end(), contract_table_exception, "an invariant was broken, table should be in cache" );
+               EOS_ASSERT( itr != _table_cache.end(), table_not_in_cache, "an invariant was broken, table should be in cache" );
                return *itr->second.first;
             }
 
             int get_end_iterator_by_table_id( table_id_object::id_type i )const {
                auto itr = _table_cache.find(i);
-               EOS_ASSERT( itr != _table_cache.end(), contract_table_exception, "an invariant was broken, table should be in cache" );
+               EOS_ASSERT( itr != _table_cache.end(), table_not_in_cache, "an invariant was broken, table should be in cache" );
                return itr->second.second;
             }
 
             const table_id_object* find_table_by_end_iterator( int ei )const {
-               EOS_ASSERT( ei < -1, contract_table_exception, "not an end iterator" );
+               EOS_ASSERT( ei < -1, invalid_table_iterator, "not an end iterator" );
                auto indx = end_iterator_to_index(ei);
                if( indx >= _end_iterator_to_table.size() ) return nullptr;
                return _end_iterator_to_table[indx];
@@ -61,16 +61,16 @@ class apply_context {
 
             const T& get( int iterator ) {
                EOS_ASSERT( iterator != -1, invalid_table_iterator, "invalid iterator" );
-               EOS_ASSERT( iterator >= 0, contract_table_exception, "dereference of end iterator" );
+               EOS_ASSERT( iterator >= 0, table_end_iterator_exception, "dereference of end iterator" );
                EOS_ASSERT( iterator < _iterator_to_object.size(), invalid_table_iterator, "iterator out of range" );
                auto result = _iterator_to_object[iterator];
-               EOS_ASSERT( result, contract_table_exception, "dereference of deleted object" );
+               EOS_ASSERT( result, dereference_deleted_table_object, "dereference of deleted object" );
                return *result;
             }
 
             void remove( int iterator ) {
                EOS_ASSERT( iterator != -1, invalid_table_iterator, "invalid iterator" );
-               EOS_ASSERT( iterator >= 0, contract_table_exception, "cannot call remove on end iterators" );
+               EOS_ASSERT( iterator >= 0, table_end_iterator_exception, "cannot call remove on end iterators" );
                EOS_ASSERT( iterator < _iterator_to_object.size(), invalid_table_iterator, "iterator out of range" );
                auto obj_ptr = _iterator_to_object[iterator];
                if( !obj_ptr ) return;

@@ -114,7 +114,7 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( asset_type_exception,              chain_type_exception,
                                     3010011, "Invalid asset" )
       FC_DECLARE_DERIVED_EXCEPTION( chain_id_type_exception,           chain_type_exception,
-                                    3010011, "Invalid chain ID" )
+                                    3010012, "Invalid chain ID" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( fork_database_exception, chain_exception,
@@ -139,6 +139,10 @@ namespace eosio { namespace chain {
                                     3030005, "block is too old to push" )
       FC_DECLARE_DERIVED_EXCEPTION( received_future_block_exception,     block_validate_exception,
                                     3030006, "block is from the future" )
+      FC_DECLARE_DERIVED_EXCEPTION( next_block_is_in_past_exception,     block_validate_exception,
+                                    3030007, "next block must be in the future" )
+      FC_DECLARE_DERIVED_EXCEPTION( wrong_signing_key,     block_validate_exception,
+                                    3030008, "block is not signed with expected key" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( transaction_exception,             chain_exception,
@@ -183,6 +187,8 @@ namespace eosio { namespace chain {
                                     3050004, "eosio_assert_code assertion failure" )
       FC_DECLARE_DERIVED_EXCEPTION( action_not_found_exception, action_validate_exception,
                                     3050005, "action can not be found" )
+      FC_DECLARE_DERIVED_EXCEPTION( action_data_and_struct_mismatch, action_validate_exception,
+                                    3050006, "mismatch between action data and its struct" )
 
    FC_DECLARE_DERIVED_EXCEPTION( database_exception, chain_exception,
                                  3060000, "database exception" )
@@ -249,9 +255,9 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( invalid_permission,           authorization_exception,
                                     3090007, "Invalid Permission" )
       FC_DECLARE_DERIVED_EXCEPTION( unlinkable_min_permission_action, authorization_exception,
-                                    3090007, "The action is not allowed to be linked with minimum permission" )
+                                    3090008, "The action is not allowed to be linked with minimum permission" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_parent_permission,           authorization_exception,
-                                    3090007, "The parent permission is invalid" )
+                                    3090009, "The parent permission is invalid" )
 
    FC_DECLARE_DERIVED_EXCEPTION( misc_exception, chain_exception,
                                  3100000, "Miscellaneous exception" )
@@ -269,7 +275,7 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( subjective_block_production_exception,    misc_exception,
                                     3100006, "subjective exception thrown during block production" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_http_client_root_cert,    misc_exception,
-                                    3100006, "invalid http client root certificate" )
+                                    3100007, "invalid http client root certificate" )
 
    FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
                                  3110000, "plugin exception" )
@@ -285,7 +291,7 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( missing_chain_plugin_exception,               plugin_exception,
                                     3110005, "Missing Chain Plugin" )
       FC_DECLARE_DERIVED_EXCEPTION( plugin_config_exception,               plugin_exception,
-                                    3110005, "Missing Chain Plugin" )
+                                    3110006, "Incorrect plugin configuration" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( wallet_exception, chain_exception,
@@ -366,14 +372,26 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( unpack_exception,                     abi_exception,
                                     3015013, "Unable to unpack the data" ) 
 
-   FC_DECLARE_DERIVED_EXCEPTION( contract_table_exception,           chain_exception,
-                                 3160000, "contract table exception" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_payer,             contract_table_exception,
+   FC_DECLARE_DERIVED_EXCEPTION( contract_exception,           chain_exception,
+                                 3160000, "contract exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_payer,             contract_exception,
                                     3160001, "The payer of the table data is invalid" )
-      FC_DECLARE_DERIVED_EXCEPTION( table_access_violation,          contract_table_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( table_access_violation,          contract_exception,
                                     3160002, "Table access violation" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_iterator,          contract_table_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_table_iterator,          contract_exception,
                                     3160003, "Invalid table iterator" )
+      FC_DECLARE_DERIVED_EXCEPTION( table_not_in_cache,          contract_exception,
+                                    3160004, "Table can not be found inside the cache" )
+      FC_DECLARE_DERIVED_EXCEPTION( table_end_iterator_exception,          contract_exception,
+                                    3160005, "Trying to dereference/ remove data pointed by end iterator" )
+      FC_DECLARE_DERIVED_EXCEPTION( dereference_deleted_table_object,          contract_exception,
+                                    3160006, "Trying to dereference deleted object inside table" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_contract_vm_type,          contract_exception,
+                                    3160007, "Invalid contract vm type" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_contract_vm_version,          contract_exception,
+                                    3160008, "Invalid contract vm version" )
+      FC_DECLARE_DERIVED_EXCEPTION( set_exact_code,          contract_exception,
+                                    3160009, "Contract is already running this version of code" )
 
    FC_DECLARE_DERIVED_EXCEPTION( producer_exception,           chain_exception,
                                  3170000, "contract table exception" )
@@ -381,6 +399,14 @@ namespace eosio { namespace chain {
                                     3170001, "Producer private key is not available" )
       FC_DECLARE_DERIVED_EXCEPTION( missing_pending_block_state,          producer_exception,
                                     3170002, "Pending block state is missing" )
+      FC_DECLARE_DERIVED_EXCEPTION( producer_double_confirm,          producer_exception,
+                                    3170003, "Producer is double confirming known range" )
+      FC_DECLARE_DERIVED_EXCEPTION( producer_schedule_exception,             producer_exception,
+                                    3170004, "Producer schedule exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( wrong_producer,             producer_exception,
+                                    3170005, "Wrong producer specified" )
+      FC_DECLARE_DERIVED_EXCEPTION( producer_not_in_schedule,             producer_exception,
+                                    3170006, "The producer is not part of current schedule" )
 
    FC_DECLARE_DERIVED_EXCEPTION( reversible_block_exception,           chain_exception,
                                  3180000, "contract table exception" )
@@ -391,4 +417,16 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( gap_in_reversible_blocks_db,          reversible_block_exception,
                                     3180003, "There is gap in reversible blocks database" )
 
+   FC_DECLARE_DERIVED_EXCEPTION( block_log_exception, chain_exception,
+                                 3190000, "block log exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( block_log_unsupported_version, block_log_exception,
+                                    3190001, "unsupported version of block log" )
+      FC_DECLARE_DERIVED_EXCEPTION( block_log_append_fail, block_log_exception,
+                                    3190002, "fail to append block to the block log" )
+      FC_DECLARE_DERIVED_EXCEPTION( wrong_block_in_block_log, block_log_exception,
+                                    3190003, "wrong block fetched from the block log" )
+      FC_DECLARE_DERIVED_EXCEPTION( nonexistent_block_log, block_log_exception,
+                                    3190004, "block log can not be found" )
+      FC_DECLARE_DERIVED_EXCEPTION( block_log_backup_dir_exist, block_log_exception,
+                                    319000, "block log backup dir already exists" )
 } } // eosio::chain
