@@ -123,6 +123,15 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( unlinkable_block_exception, chain_exception,
                                     3020001, "unlinkable block" )
 
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_block_state, fork_database_exception,
+                                    3020002, "duplicate block state" )
+      FC_DECLARE_DERIVED_EXCEPTION( duplicate_block, fork_database_exception,
+                                    3020002, "duplicate block" )
+      FC_DECLARE_DERIVED_EXCEPTION( fork_db_add_null_block, fork_database_exception,
+                                    3020002, "attempt to add null block to fork db" )
+      FC_DECLARE_DERIVED_EXCEPTION( block_not_found, fork_database_exception,
+                                    3020002, "block can not be found" )
+
 
    FC_DECLARE_DERIVED_EXCEPTION( block_validate_exception, chain_exception,
                                  3030000, "block exception" )
@@ -172,6 +181,10 @@ namespace eosio { namespace chain {
                                     3040010, "The deferred transaction can not be found" )
       FC_DECLARE_DERIVED_EXCEPTION( too_many_tx_at_once,     transaction_exception,
                                     3040011, "Pushing too many transactions at once" )
+      FC_DECLARE_DERIVED_EXCEPTION( tx_too_big,     transaction_exception,
+                                    3040012, "Transaction is too big" )
+      FC_DECLARE_DERIVED_EXCEPTION( tx_contains_extension,     transaction_exception,
+                                    3040012, "Transaction extension is currently not supported" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( action_validate_exception, chain_exception,
@@ -276,6 +289,12 @@ namespace eosio { namespace chain {
                                     3100006, "subjective exception thrown during block production" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_http_client_root_cert,    misc_exception,
                                     3100007, "invalid http client root certificate" )
+      FC_DECLARE_DERIVED_EXCEPTION( overflow_exception,    misc_exception,
+                                    3100008, "oveflow" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_resource_limit_param,    misc_exception,
+                                    3100009, "Invalid resource limit parameter" )
+      FC_DECLARE_DERIVED_EXCEPTION( multiple_voter_info,    misc_exception,
+                                    3100010, "Multiple voter info detected" )
 
    FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
                                  3110000, "plugin exception" )
@@ -392,6 +411,10 @@ namespace eosio { namespace chain {
                                     3160008, "Invalid contract vm version" )
       FC_DECLARE_DERIVED_EXCEPTION( set_exact_code,          contract_exception,
                                     3160009, "Contract is already running this version of code" )
+      FC_DECLARE_DERIVED_EXCEPTION( wast_file_not_found,          contract_exception,
+                                    3160010, "No wast file found" )
+      FC_DECLARE_DERIVED_EXCEPTION( abi_file_not_found,          contract_exception,
+                                    3160011, "No abi file found" )
 
    FC_DECLARE_DERIVED_EXCEPTION( producer_exception,           chain_exception,
                                  3170000, "contract table exception" )

@@ -16,6 +16,7 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 
+#include <eosio/chain/config.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/transaction.hpp>
 
@@ -131,14 +132,14 @@ flat_set<public_key_type> signed_transaction::get_signature_keys( const chain_id
 uint32_t packed_transaction::get_unprunable_size()const {
    uint64_t size = config::fixed_net_overhead_of_packed_trx;
    size += packed_trx.size();
-   FC_ASSERT( size <= std::numeric_limits<uint32_t>::max(), "packed_transaction is too big" );
+   EOS_ASSERT( size <= std::numeric_limits<uint32_t>::max(), tx_too_big, "packed_transaction is too big" );
    return static_cast<uint32_t>(size);
 }
 
 uint32_t packed_transaction::get_prunable_size()const {
    uint64_t size = fc::raw::pack_size(signatures);
    size += packed_context_free_data.size();
-   FC_ASSERT( size <= std::numeric_limits<uint32_t>::max(), "packed_transaction is too big" );
+   EOS_ASSERT( size <= std::numeric_limits<uint32_t>::max(), tx_too_big, "packed_transaction is too big" );
    return static_cast<uint32_t>(size);
 }
 
