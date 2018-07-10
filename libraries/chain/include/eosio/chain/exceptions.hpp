@@ -126,11 +126,13 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( duplicate_block_state, fork_database_exception,
                                     3020002, "duplicate block state" )
       FC_DECLARE_DERIVED_EXCEPTION( duplicate_block, fork_database_exception,
-                                    3020002, "duplicate block" )
+                                    3020003, "duplicate block" )
       FC_DECLARE_DERIVED_EXCEPTION( fork_db_add_null_block, fork_database_exception,
-                                    3020002, "attempt to add null block to fork db" )
+                                    3020004, "attempt to add null block to fork db" )
       FC_DECLARE_DERIVED_EXCEPTION( block_not_found, fork_database_exception,
-                                    3020002, "block can not be found" )
+                                    3020005, "block can not be found" )
+      FC_DECLARE_DERIVED_EXCEPTION( inconsistent_fork_db, fork_database_exception,
+                                    3020006, "fork db is inconsistent" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( block_validate_exception, chain_exception,
@@ -172,11 +174,11 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( invalid_ref_block_exception, transaction_exception,
                                     3040007, "Invalid Reference Block" )
       FC_DECLARE_DERIVED_EXCEPTION( tx_duplicate,                transaction_exception,
-                                    3040008, "duplicate transaction" )
+                                    3040008, "Duplicate transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( deferred_tx_duplicate,       transaction_exception,
-                                    3040009, "duplicate deferred transaction" )
+                                    3040009, "Duplicate deferred transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( cfa_inside_generated_tx,     transaction_exception,
-                                    3040009, "context free action is not allowed inside generated transaction" )
+                                    3040009, "Context free action is not allowed inside generated transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( nonexistent_deferred_tx,     transaction_exception,
                                     3040010, "The deferred transaction can not be found" )
       FC_DECLARE_DERIVED_EXCEPTION( too_many_tx_at_once,     transaction_exception,
@@ -202,6 +204,18 @@ namespace eosio { namespace chain {
                                     3050005, "action can not be found" )
       FC_DECLARE_DERIVED_EXCEPTION( action_data_and_struct_mismatch, action_validate_exception,
                                     3050006, "mismatch between action data and its struct" )
+      FC_DECLARE_DERIVED_EXCEPTION( unaccessible_api, action_validate_exception,
+                                    3050007, "Attempt to use unaccessible API" )
+      FC_DECLARE_DERIVED_EXCEPTION( abort_called, action_validate_exception,
+                                    3050008, "Abort Called" )
+      FC_DECLARE_DERIVED_EXCEPTION( inline_action_too_big, action_validate_exception,
+                                    3050009, "Inline Action exceeds maximum size limit" )
+      FC_DECLARE_DERIVED_EXCEPTION( crypto_api_exception, action_validate_exception,
+                                    3050010, "Crypto API Exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( db_api_exception, action_validate_exception,
+                                    3050011, "Database API Exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( arithmetic_exception, action_validate_exception,
+                                    3050012, "Arithmetic Exception" )
 
    FC_DECLARE_DERIVED_EXCEPTION( database_exception, chain_exception,
                                  3060000, "database exception" )
@@ -214,22 +228,19 @@ namespace eosio { namespace chain {
                                     3060003, "Contract Table Query Exception" )
       FC_DECLARE_DERIVED_EXCEPTION( contract_query_exception,       database_exception,
                                     3060004, "Contract Query Exception" )
-
-
+     
    FC_DECLARE_DERIVED_EXCEPTION( wasm_exception, chain_exception,
                                  3070000, "WASM Exception" )
-
       FC_DECLARE_DERIVED_EXCEPTION( page_memory_error,        wasm_exception,
                                     3070001, "error in WASM page memory" )
-
       FC_DECLARE_DERIVED_EXCEPTION( wasm_execution_error,     wasm_exception,
                                     3070002, "Runtime Error Processing WASM" )
-
       FC_DECLARE_DERIVED_EXCEPTION( wasm_serialization_error, wasm_exception,
                                     3070003, "Serialization Error Processing WASM" )
-
       FC_DECLARE_DERIVED_EXCEPTION( overlapping_memory_error, wasm_exception,
                                     3070004, "memcpy with overlapping memory" )
+      FC_DECLARE_DERIVED_EXCEPTION( binaryen_exception, wasm_exception,
+                                    3070005, "binaryen exception" )
 
 
 
@@ -287,14 +298,14 @@ namespace eosio { namespace chain {
                                     3100005, "extracted genesis state from blocks.log" )
       FC_DECLARE_DERIVED_EXCEPTION( subjective_block_production_exception,    misc_exception,
                                     3100006, "subjective exception thrown during block production" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_http_client_root_cert,    misc_exception,
-                                    3100007, "invalid http client root certificate" )
       FC_DECLARE_DERIVED_EXCEPTION( overflow_exception,    misc_exception,
-                                    3100008, "oveflow" )
+                                    3100007, "oveflow" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_resource_limit_param,    misc_exception,
-                                    3100009, "Invalid resource limit parameter" )
+                                    3100008, "Invalid resource limit parameter" )
       FC_DECLARE_DERIVED_EXCEPTION( multiple_voter_info,    misc_exception,
-                                    3100010, "Multiple voter info detected" )
+                                    3100009, "Multiple voter info detected" )
+      FC_DECLARE_DERIVED_EXCEPTION( unsupported_feature,    misc_exception,
+                                    3100010, "Feature is currently unsupported" )
 
    FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
                                  3110000, "plugin exception" )
@@ -451,5 +462,18 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( nonexistent_block_log, block_log_exception,
                                     3190004, "block log can not be found" )
       FC_DECLARE_DERIVED_EXCEPTION( block_log_backup_dir_exist, block_log_exception,
-                                    319000, "block log backup dir already exists" )
+                                    3190005, "block log backup dir already exists" )
+
+   FC_DECLARE_DERIVED_EXCEPTION( http_exception, chain_exception,
+                                 3200000, "block log exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_http_client_root_cert,    http_exception,
+                                    3200001, "invalid http client root certificate" )
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_http_response, http_exception,
+                                    3200002, "invalid http response" )
+      FC_DECLARE_DERIVED_EXCEPTION( resolve_to_multiple_ports, block_log_exception,
+                                    3200003, "service resolved to multiple ports" )
+      FC_DECLARE_DERIVED_EXCEPTION( fail_to_resolve_host, block_log_exception,
+                                    3200004, "fail to resolve host" )
+      FC_DECLARE_DERIVED_EXCEPTION( http_request_fail, block_log_exception,
+                                    3200005, "http request fail" )
 } } // eosio::chain
