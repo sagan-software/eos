@@ -5,7 +5,6 @@
 #pragma once
 
 #include <fc/exception/exception.hpp>
-#include <eosio/chain/protocol.hpp>
 #include <boost/core/typeinfo.hpp>
 
 
@@ -115,6 +114,10 @@ namespace eosio { namespace chain {
                                     3010011, "Invalid asset" )
       FC_DECLARE_DERIVED_EXCEPTION( chain_id_type_exception,           chain_type_exception,
                                     3010012, "Invalid chain ID" )
+      FC_DECLARE_DERIVED_EXCEPTION( fixed_key_type_exception,           chain_type_exception,
+                                    3010013, "Invalid fixed key" )
+      FC_DECLARE_DERIVED_EXCEPTION( symbol_type_exception,           chain_type_exception,
+                                    3010014, "Invalid symbol" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( fork_database_exception, chain_exception,
@@ -300,12 +303,10 @@ namespace eosio { namespace chain {
                                     3100006, "subjective exception thrown during block production" )
       FC_DECLARE_DERIVED_EXCEPTION( overflow_exception,    misc_exception,
                                     3100007, "oveflow" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_resource_limit_param,    misc_exception,
-                                    3100008, "Invalid resource limit parameter" )
       FC_DECLARE_DERIVED_EXCEPTION( multiple_voter_info,    misc_exception,
-                                    3100009, "Multiple voter info detected" )
+                                    3100008, "Multiple voter info detected" )
       FC_DECLARE_DERIVED_EXCEPTION( unsupported_feature,    misc_exception,
-                                    3100010, "Feature is currently unsupported" )
+                                    3100009, "Feature is currently unsupported" )
 
    FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
                                  3110000, "plugin exception" )
@@ -476,4 +477,7 @@ namespace eosio { namespace chain {
                                     3200004, "fail to resolve host" )
       FC_DECLARE_DERIVED_EXCEPTION( http_request_fail, block_log_exception,
                                     3200005, "http request fail" )
+
+   FC_DECLARE_DERIVED_EXCEPTION( resource_limit_exception, chain_exception,
+                                 3210000, "resource limit exception" )
 } } // eosio::chain
