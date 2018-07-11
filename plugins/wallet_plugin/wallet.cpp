@@ -235,7 +235,7 @@ public:
          ofstream outfile{ wallet_filename };
          if (!outfile) {
             elog("Unable to open file: ${fn}", ("fn", wallet_filename));
-            FC_THROW("Unable to open file: ${fn}", ("fn", wallet_filename));
+            EOS_THROW(wallet_exception, "Unable to open file: ${fn}", ("fn", wallet_filename));
          }
          outfile.write( data.c_str(), data.length() );
          outfile.flush();

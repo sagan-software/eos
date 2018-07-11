@@ -1003,7 +1003,7 @@ namespace eosio {
            peer_ilog(this, "received signed_block_ptr");
            if (!b) {
               peer_elog(this, "bad signed_block_ptr : null pointer");
-              FC_THROW("bad block" );
+              EOS_THROW(block_validate_exception, "bad block" );
            }
            status( "received block " + std::to_string(b->block_num()) );
            //ilog( "recv block ${n}", ("n", b->block_num()) );
@@ -1048,7 +1048,7 @@ namespace eosio {
            peer_ilog(this, "received packed_transaction_ptr");
            if (!p) {
               peer_elog(this, "bad packed_transaction_ptr : null pointer");
-              FC_THROW("bad transaction");
+              EOS_THROW(transaction_exception, "bad transaction");
            }
 
            auto id = p->id();

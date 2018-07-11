@@ -110,7 +110,7 @@ namespace eosio { namespace chain {
          structs[st.name] = st;
 
       for( const auto& td : abi.types ) {
-         EOS_ASSERT(is_type(td.type), invalid_abi_type_exception, "invalid type", ("type",td.type));
+         EOS_ASSERT(is_type(td.type), invalid_type_inside_abi, "invalid type", ("type",td.type));
          EOS_ASSERT(!is_type(td.new_type_name), duplicate_abi_type_def_exception, "type already exists", ("new_type_name",td.new_type_name));
          typedefs[td.new_type_name] = td.type;
       }
@@ -148,7 +148,7 @@ namespace eosio { namespace chain {
 
    int abi_serializer::get_integer_size(const type_name& type) const {
       string stype = type;
-      EOS_ASSERT( is_integer(type), invalid_abi_type_exception, "${stype} is not an integer type", ("stype",stype));
+      EOS_ASSERT( is_integer(type), invalid_type_inside_abi, "${stype} is not an integer type", ("stype",stype));
       if( boost::starts_with(stype, "uint") ) {
          return boost::lexical_cast<int>(stype.substr(4));
       } else {
@@ -190,7 +190,7 @@ namespace eosio { namespace chain {
 
    const struct_def& abi_serializer::get_struct(const type_name& type)const {
       auto itr = structs.find(resolve_type(type) );
-      EOS_ASSERT( itr != structs.end(), invalid_abi_type_exception, "Unknown struct ${type}", ("type",type) );
+      EOS_ASSERT( itr != structs.end(), invalid_type_inside_abi, "Unknown struct ${type}", ("type",type) );
       return itr->second;
    }
 
@@ -207,7 +207,7 @@ namespace eosio { namespace chain {
          }
       } FC_CAPTURE_AND_RETHROW( (t) ) }
       for( const auto& t : typedefs ) { try {
-         EOS_ASSERT(is_type(t.second), invalid_abi_type_exception, "", ("type",t.second) );
+         EOS_ASSERT(is_type(t.second), invalid_type_inside_abi, "", ("type",t.second) );
       } FC_CAPTURE_AND_RETHROW( (t) ) }
       for( const auto& s : structs ) { try {
          if( s.second.base != type_name() ) {
@@ -223,17 +223,17 @@ namespace eosio { namespace chain {
          }
          for( const auto& field : s.second.fields ) { try {
             EOS_ASSERT( fc::time_point::now() < deadline, abi_serialization_deadline_exception, "serialization time limit ${t}us exceeded", ("t", max_serialization_time) );
-            EOS_ASSERT(is_type(field.type), invalid_abi_type_exception, "", ("type",field.type) );
+            EOS_ASSERT(is_type(field.type), invalid_type_inside_abi, "", ("type",field.type) );
          } FC_CAPTURE_AND_RETHROW( (field) ) }
       } FC_CAPTURE_AND_RETHROW( (s) ) }
       for( const auto& a : actions ) { try {
         EOS_ASSERT( fc::time_point::now() < deadline, abi_serialization_deadline_exception, "serialization time limit ${t}us exceeded", ("t", max_serialization_time) );
-        EOS_ASSERT(is_type(a.second), invalid_abi_type_exception, "", ("type",a.second) );
+        EOS_ASSERT(is_type(a.second), invalid_type_inside_abi, "", ("type",a.second) );
       } FC_CAPTURE_AND_RETHROW( (a)  ) }
 
       for( const auto& t : tables ) { try {
         EOS_ASSERT( fc::time_point::now() < deadline, abi_serialization_deadline_exception, "serialization time limit ${t}us exceeded", ("t", max_serialization_time) );
-        EOS_ASSERT(is_type(t.second), invalid_abi_type_exception, "", ("type",t.second) );
+        EOS_ASSERT(is_type(t.second), invalid_type_inside_abi, "", ("type",t.second) );
       } FC_CAPTURE_AND_RETHROW( (t)  ) }
    }
 
@@ -342,13 +342,13 @@ namespace eosio { namespace chain {
                else {
                   _variant_to_binary(field.type, fc::variant(), ds, recursion_depth, deadline);
                   /// TODO: default construct field and write it out
-                  FC_THROW( "Missing '${f}' in variant object", ("f",field.name) );
+                  EOS_THROW( pack_exception, "Missing '${f}' in variant object", ("f",field.name) );
                }
             }
          } else if( var.is_array() ) {
             const auto& va = var.get_array();
 
-            EOS_ASSERT( st.base == type_name(), invalid_abi_type_exception, "support for base class as array not yet implemented" );
+            EOS_ASSERT( st.base == type_name(), invalid_type_inside_abi, "support for base class as array not yet implemented" );
             /*if( st.base != type_name() ) {
                _variant_to_binary(resolve_type(st.base), var, ds, recursive_depth);
             }

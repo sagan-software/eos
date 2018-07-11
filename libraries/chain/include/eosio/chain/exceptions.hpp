@@ -181,15 +181,15 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( deferred_tx_duplicate,       transaction_exception,
                                     3040009, "Duplicate deferred transaction" )
       FC_DECLARE_DERIVED_EXCEPTION( cfa_inside_generated_tx,     transaction_exception,
-                                    3040009, "Context free action is not allowed inside generated transaction" )
-      FC_DECLARE_DERIVED_EXCEPTION( nonexistent_deferred_tx,     transaction_exception,
-                                    3040010, "The deferred transaction can not be found" )
-      FC_DECLARE_DERIVED_EXCEPTION( too_many_tx_at_once,     transaction_exception,
-                                    3040011, "Pushing too many transactions at once" )
-      FC_DECLARE_DERIVED_EXCEPTION( tx_too_big,     transaction_exception,
-                                    3040012, "Transaction is too big" )
-      FC_DECLARE_DERIVED_EXCEPTION( tx_contains_extension,     transaction_exception,
-                                    3040012, "Transaction extension is currently not supported" )
+                                    3040010, "Context free action is not allowed inside generated transaction" )
+      FC_DECLARE_DERIVED_EXCEPTION( tx_not_found,     transaction_exception,
+                                    3040011, "The transaction can not be found" )
+      FC_DECLARE_DERIVED_EXCEPTION( too_many_tx_at_once,          transaction_exception,
+                                    3040012, "Pushing too many transactions at once" )
+      FC_DECLARE_DERIVED_EXCEPTION( tx_too_big,                   transaction_exception,
+                                    3040013, "Transaction is too big" )
+      FC_DECLARE_DERIVED_EXCEPTION( unknown_transaction_compression, transaction_exception,
+                                    3040014, "Unknown transaction compression" )
 
 
    FC_DECLARE_DERIVED_EXCEPTION( action_validate_exception, chain_exception,
@@ -307,6 +307,8 @@ namespace eosio { namespace chain {
                                     3100008, "Multiple voter info detected" )
       FC_DECLARE_DERIVED_EXCEPTION( unsupported_feature,    misc_exception,
                                     3100009, "Feature is currently unsupported" )
+      
+
 
    FC_DECLARE_DERIVED_EXCEPTION( plugin_exception, chain_exception,
                                  3110000, "plugin exception" )
@@ -350,6 +352,8 @@ namespace eosio { namespace chain {
                                     3120010, "Unsupported key type" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_lock_timeout_exception,    wallet_exception,
                                     3120011, "Wallet lock timeout is invalid" )
+      FC_DECLARE_DERIVED_EXCEPTION( secure_enclave_exception,          wallet_exception,
+                                    3120012, "Secure Enclave Exception" )
  
 
    FC_DECLARE_DERIVED_EXCEPTION( whitelist_blacklist_exception,   chain_exception,
@@ -382,7 +386,7 @@ namespace eosio { namespace chain {
                                     3015002, "Invalid Ricardian Clause" )
       FC_DECLARE_DERIVED_EXCEPTION( invalid_ricardian_action_exception,   abi_exception,
                                     3015003, "Invalid Ricardian Action" )
-      FC_DECLARE_DERIVED_EXCEPTION( invalid_abi_type_exception,           abi_exception,
+      FC_DECLARE_DERIVED_EXCEPTION( invalid_type_inside_abi,           abi_exception,
                                     3015004, "The type defined in the ABI is invalid" ) // Not to be confused with abi_type_exception
       FC_DECLARE_DERIVED_EXCEPTION( duplicate_abi_type_def_exception,     abi_exception,
                                     3015005, "Duplicate type definition in the ABI" )
@@ -401,7 +405,9 @@ namespace eosio { namespace chain {
       FC_DECLARE_DERIVED_EXCEPTION( abi_circular_def_exception,           abi_exception,
                                     3015012, "Circular definition is detected in the ABI" ) 
       FC_DECLARE_DERIVED_EXCEPTION( unpack_exception,                     abi_exception,
-                                    3015013, "Unable to unpack the data" ) 
+                                    3015013, "Unpack data exception" ) 
+      FC_DECLARE_DERIVED_EXCEPTION( pack_exception,                     abi_exception,
+                                    3015014, "Pack data exception" ) 
 
    FC_DECLARE_DERIVED_EXCEPTION( contract_exception,           chain_exception,
                                  3160000, "contract exception" )
@@ -480,4 +486,15 @@ namespace eosio { namespace chain {
 
    FC_DECLARE_DERIVED_EXCEPTION( resource_limit_exception, chain_exception,
                                  3210000, "resource limit exception" )
+   
+   FC_DECLARE_DERIVED_EXCEPTION( mongo_db_exception, chain_exception,
+                                 3220000, "Mongo DB exception" )
+      FC_DECLARE_DERIVED_EXCEPTION( mongo_db_account_not_found, mongo_db_exception,
+                                 3220001, "Account is not found in Mongo DB" )
+      FC_DECLARE_DERIVED_EXCEPTION( mongo_db_tx_not_found, mongo_db_exception,
+                                 3220002, "Transaction is not found in Mongo DB" )
+      FC_DECLARE_DERIVED_EXCEPTION( mongo_db_block_not_found, mongo_db_exception,
+                                 3220003, "Block is not found in Mongo DB" )
+      FC_DECLARE_DERIVED_EXCEPTION( mongo_db_block_exists, mongo_db_exception,
+                                 3220000, "Block already exists in Mongo DB" )
 } } // eosio::chain
