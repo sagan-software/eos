@@ -3,30 +3,26 @@ version: "3"
 services:
 
   nodeosd:
-    build:
-      context: .
-    image: eosio/eos
-    command: /nodeosd.sh --data-dir /mnt/dev/data-dir -e
+    image: eosio/eos:latest
     hostname: nodeosd
+    environment:
+      - DATA_DIR=/mnt/dev/data-dir
     ports:
       - 8888:8888
       - 9876:9876
     expose:
       - "8888"
     volumes:
-      - nodeos-data-volume:/mnt/dev/data-dir
+      - ./data-dir:/mnt/dev/data-dir
 
   keosd:
-    image: eosio/eos
-    command: keosd --wallet-dir /mnt/dev/data-dir --http-server-address=127.0.0.1:8900
+    image: eosio/eos:latest
     hostname: keosd
+    entrypoint: keosd
+    command: >
+      --wallet-dir=/mnt/dev/data-dir
+      --http-server-address=127.0.0.1:8900
     links:
       - nodeosd
     volumes:
-      - keosd-data-volume:/mnt/dev/data-dir
-
-volumes:
-  nodeos-data-volume:
-    external: true
-  keosd-data-volume:
-    external: true
+      - ./data-dir:/mnt/dev/data-dir

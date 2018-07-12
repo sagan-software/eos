@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+
+  mongo:
+    image: mongo
+    hostname: mongo
+    restart: always
+    ports:
+      - 27017:27017
+
+  nodeosd:
+    image: eosio/eos
+    hostname: nodeosd
+    command: >
+      --data-dir /mnt/dev/data
+      --config-dir /eos/build/data-dir
+      --enable-stale-production
+      --plugin=eosio::mongo_db_plugin
+      --mongodb-uri mongodb://mongo:27017/EOS
+      --mongodb-wipe
+    ports:
+      - 8888:8888
+      - 9876:9876
+    environment:
+      - STARTUP_DELAY=5
+    expose:
+      - "8888"
+    volumes:
+      - ./data-dir:/mnt/dev/data-dir
+
+  keosd:
+    image: eosio/eos
+    hostname: keosd
+    entrypoint: keosd
+    command: >
+      --wallet-dir=/mnt/dev/data-dir
+      --http-server-address=127.0.0.1:8900
+    links:
+      - nodeosd
+    volumes:
+      - ./data-dir:/mnt/dev/data-dir
+    environment:
+      - STARTUP_DELAY=5

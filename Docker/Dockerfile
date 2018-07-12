@@ -1,22 +1,28 @@
+FROM eosio/eos-dev as dev
+
 FROM ubuntu:18.04
 
-ARG branch=master
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install openssl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update \
-    && apt-get install -y git sudo
+COPY --from=dev /usr/local/lib/* /usr/local/lib/
+COPY --from=dev /usr/local/bin/nodeos /usr/local/bin
+COPY --from=dev /usr/local/bin/keosd /usr/local/bin
+COPY --from=dev /usr/local/bin/cleos /usr/local/bin
 
-RUN git clone -b $branch https://github.com/EOSIO/eos.git
+ENV DATA_DIR /eos/build/data-dir
+ENV CONFIG_DIR /eos/build/data-dir
+RUN mkdir -p $DATA_DIR $CONFIG_DIR
 
-WORKDIR /eos
+COPY --from=dev /eos/build/data-dir/config.ini $CONFIG_DIR
+COPY --from=dev /entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
-RUN git submodule update --init --recursive
+EXPOSE 8888
+EXPOSE 9876
 
-RUN echo 1 | ./eosio_build.sh
+ENV LD_LIBRARY_PATH /usr/local/lib
 
-RUN cmake --build /eos/build --target install
-
-COPY ./config.ini /
-
-COPY ./nodeosd.sh /
-
-RUN chmod +x /nodeosd.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["--data-dir", "$DATA_DIR", "--config-dir", "$CONFIG_DIR", "--enable-stale-production"]
